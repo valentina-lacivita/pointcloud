@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Functions to create a new set of C vectors directed outwards from a cloud of A and B points and visualize the result.">
+
+<title>core_functions – point_cloud</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-7c6d40aa23c779922b80e0578a9e8972.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="core_functions – point_cloud">
+<meta property="og:description" content="Functions to create a new set of C vectors directed outwards from a cloud of A and B points and visualize the result.">
+<meta property="og:image" content="https://valentina-lacivita.github.io/pointcloud/00_core_files/figure-html/cell-21-output-1.png">
+<meta property="og:site_name" content="point_cloud">
+<meta property="og:image:height" content="398">
+<meta property="og:image:width" content="404">
+<meta name="twitter:title" content="core_functions – point_cloud">
+<meta name="twitter:description" content="Functions to create a new set of C vectors directed outwards from a cloud of A and B points and visualize the result.">
+<meta name="twitter:image" content="https://valentina-lacivita.github.io/pointcloud/00_core_files/figure-html/cell-21-output-1.png">
+<meta name="twitter:image-height" content="398">
+<meta name="twitter:image-width" content="404">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">point_cloud</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./core.html">core_functions</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">point_cloud</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./core.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">core_functions</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#load_input_data" id="toc-load_input_data" class="nav-link active" data-scroll-target="#load_input_data">load_input_data</a></li>
+  <li><a href="#get_centroid" id="toc-get_centroid" class="nav-link" data-scroll-target="#get_centroid">get_centroid</a></li>
+  <li><a href="#get_labeled_points" id="toc-get_labeled_points" class="nav-link" data-scroll-target="#get_labeled_points">get_labeled_points</a></li>
+  <li><a href="#calculate_c_point" id="toc-calculate_c_point" class="nav-link" data-scroll-target="#calculate_c_point">calculate_C_point</a></li>
+  <li><a href="#plot_convex_hull" id="toc-plot_convex_hull" class="nav-link" data-scroll-target="#plot_convex_hull">plot_convex_hull</a></li>
+  <li><a href="#plot_points" id="toc-plot_points" class="nav-link" data-scroll-target="#plot_points">plot_points</a></li>
+  <li><a href="#plot_vectors" id="toc-plot_vectors" class="nav-link" data-scroll-target="#plot_vectors">plot_vectors</a></li>
+  <li><a href="#plot_abc" id="toc-plot_abc" class="nav-link" data-scroll-target="#plot_abc">plot_ABC</a></li>
+  <li><a href="#calculate_c_points" id="toc-calculate_c_points" class="nav-link" data-scroll-target="#calculate_c_points">calculate_C_points</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/valentina-lacivita/pointcloud/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="core.html.md"><i class="bi bi-file-code"></i>CommonMark</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">core_functions</h1>
+</div>
+
+<div>
+  <div class="description">
+    Functions to create a new set of <em>C</em> vectors directed outwards from a cloud of <em>A</em> and <em>B</em> points and visualize the result.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<section id="load-input-data" class="level4">
+<h4 class="anchored" data-anchor-id="load-input-data">1. Load input data</h4>
+<hr>
+<p><a href="https://github.com/valentina-lacivita/pointcloud/blob/main/point_cloud/core.py#L21" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="load_input_data" class="level3">
+<h3 class="anchored" data-anchor-id="load_input_data">load_input_data</h3>
+<blockquote class="blockquote">
+<pre><code> load_input_data (path:str)</code></pre>
+</blockquote>
+<p><em>Load data from a txt file with headers [label, x, y, z] and values separated by spaces.</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>path</td>
+<td>str</td>
+<td>path to data file</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>DataFrame</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-5" class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>input_data <span class="op">=</span> load_input_data(<span class="st">"../data/cdd.txt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-6" class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>input_data.head().<span class="bu">round</span>(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">label</th>
+<th data-quarto-table-cell-role="th">x</th>
+<th data-quarto-table-cell-role="th">y</th>
+<th data-quarto-table-cell-role="th">z</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>A</td>
+<td>2.36</td>
+<td>-0.45</td>
+<td>0.65</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>A</td>
+<td>0.97</td>
+<td>-0.12</td>
+<td>0.40</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>B</td>
+<td>0.70</td>
+<td>1.29</td>
+<td>0.19</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>A</td>
+<td>0.04</td>
+<td>1.50</td>
+<td>-1.14</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>A</td>
+<td>0.01</td>
+<td>0.14</td>
+<td>-1.81</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="cell-7" class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>input_data.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 24 entries, 0 to 23
+Data columns (total 4 columns):
+ #   Column  Non-Null Count  Dtype  
+---  ------  --------------  -----  
+ 0   label   24 non-null     object 
+ 1   x       24 non-null     float64
+ 2   y       24 non-null     float64
+ 3   z       24 non-null     float64
+dtypes: float64(3), object(1)
+memory usage: 896.0+ bytes</code></pre>
+</div>
+</div>
+<p>The input contains a list of 24 points, each of which is defined by a <code>label</code> and its <em>xyz</em>-coordinates.</p>
+<div id="cell-9" class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>input_data[<span class="st">"label"</span>].value_counts()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>label
+B    15
+A     9
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<p>There are 2 different subsets of points: 9 <em>A</em> points and 15 <em>B</em> points.</p>
+<section id="calculate-the-centroid-of-the-point-cloud" class="level4">
+<h4 class="anchored" data-anchor-id="calculate-the-centroid-of-the-point-cloud">2. Calculate the centroid of the point cloud</h4>
+<hr>
+<p><a href="https://github.com/valentina-lacivita/pointcloud/blob/main/point_cloud/core.py#L30" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="get_centroid" class="level3">
+<h3 class="anchored" data-anchor-id="get_centroid">get_centroid</h3>
+<blockquote class="blockquote">
+<pre><code> get_centroid (points:&lt;built-infunctionarray&gt;)</code></pre>
+</blockquote>
+<p><em>Calculate centroid of point cloud.</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>points</td>
+<td>array</td>
+<td>xyz-coords of points</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>array</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-13" class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>centroid <span class="op">=</span> get_centroid(input_data[[<span class="st">"x"</span>, <span class="st">"y"</span>, <span class="st">"z"</span>]].values)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>centroid.<span class="bu">round</span>(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>array([ 0.24, -0.16, -0.31])</code></pre>
+</div>
+</div>
+<section id="generate-new-c-points-from-b-points" class="level4">
+<h4 class="anchored" data-anchor-id="generate-new-c-points-from-b-points">3. Generate new <em>C</em> points from <em>B</em> points</h4>
+<p>First create a function to select the <em>B</em> points:</p>
+<hr>
+<p><a href="https://github.com/valentina-lacivita/pointcloud/blob/main/point_cloud/core.py#L40" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="get_labeled_points" class="level3">
+<h3 class="anchored" data-anchor-id="get_labeled_points">get_labeled_points</h3>
+<blockquote class="blockquote">
+<pre><code> get_labeled_points (input_data:pandas.core.frame.DataFrame, label:str)</code></pre>
+</blockquote>
+<p><em>Select subset of points by label.</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>input_data</td>
+<td>DataFrame</td>
+<td>points labels and xyz-coords</td>
+</tr>
+<tr class="even">
+<td>label</td>
+<td>str</td>
+<td>label of subset of points</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>array</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-17" class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>B_points <span class="op">=</span> get_labeled_points(input_data, <span class="st">"B"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-18" class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>B_points.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>(15, 3)</code></pre>
+</div>
+</div>
+<div id="cell-19" class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>B_points[:<span class="dv">3</span>].<span class="bu">round</span>(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>array([[ 0.7 ,  1.29,  0.19],
+       [ 0.23, -0.84, -0.63],
+       [-1.49, -1.08,  0.14]])</code></pre>
+</div>
+</div>
+<p>Then, define a function that calculate a new point <em>C</em> at a given distance from a point <em>B</em> along the direction centroid-&gt;<em>B</em></p>
+<hr>
+<p><a href="https://github.com/valentina-lacivita/pointcloud/blob/main/point_cloud/core.py#L50" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="calculate_c_point" class="level3">
+<h3 class="anchored" data-anchor-id="calculate_c_point">calculate_C_point</h3>
+<blockquote class="blockquote">
+<pre><code> calculate_C_point (B_point:&lt;built-infunctionarray&gt;, centroid:&lt;built-
+                    infunctionarray&gt;, distance:float=1.0)</code></pre>
+</blockquote>
+<p><em>Given a point B, calculate a vector C originating from B and directed outwards from the point cloud, along the direction <code>centroid</code>–&gt;<code>B_point</code>.</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>B_point</td>
+<td>array</td>
+<td></td>
+<td>B point</td>
+</tr>
+<tr class="even">
+<td>centroid</td>
+<td>array</td>
+<td></td>
+<td>centroid of point cloud</td>
+</tr>
+<tr class="odd">
+<td>distance</td>
+<td>float</td>
+<td>1.0</td>
+<td>prescribed distance D of the B-&gt;C vector</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>array</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>For each <em>B</em> point calculate the corresponding <em>C</em> point</p>
+<div id="cell-23" class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>C_points <span class="op">=</span> np.apply_along_axis(<span class="kw">lambda</span> p: calculate_C_point(p, centroid), <span class="dv">1</span>, B_points)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-24" class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>C_points[:<span class="dv">3</span>].<span class="bu">round</span>(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<pre><code>array([[ 0.99,  2.2 ,  0.5 ],
+       [ 0.21, -1.74, -1.06],
+       [-2.35, -1.54,  0.36]])</code></pre>
+</div>
+</div>
+<section id="visualize-the-result" class="level4">
+<h4 class="anchored" data-anchor-id="visualize-the-result">4. Visualize the result</h4>
+<p>It is useful to visualize the results in 3D, together with the point cloud. First let’s calculate the convex hull of the original point cloud and plot it</p>
+<hr>
+<p><a href="https://github.com/valentina-lacivita/pointcloud/blob/main/point_cloud/core.py#L62" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+</section>
+<section id="plot_convex_hull" class="level3">
+<h3 class="anchored" data-anchor-id="plot_convex_hull">plot_convex_hull</h3>
+<blockquote class="blockquote">
+<pre><code> plot_convex_hull (ax:mpl_toolkits.mplot3d.axes3d.Axes3D, points:&lt;built-
+                   infunctionarray&gt;)</code></pre>
+</blockquote>
+<p><em>3D plot of convex hull.</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ax</td>
+<td>Axes3D</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>points</td>
+<td>array</td>
+<td>xyz-coords of points</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>Axes3D</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Now let’s define the functions to plot the point cloud and the new vectors <em>C</em></p>
+<hr>
+<p><a href="https://github.com/valentina-lacivita/pointcloud/blob/main/point_cloud/core.py#L75" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="plot_points" class="level3">
+<h3 class="anchored" data-anchor-id="plot_points">plot_points</h3>
+<blockquote class="blockquote">
+<pre><code> plot_points (ax:mpl_toolkits.mplot3d.axes3d.Axes3D,
+              input_data:pandas.core.frame.DataFrame)</code></pre>
+</blockquote>
+<p><em>3D plot of original points.</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ax</td>
+<td>Axes3D</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>input_data</td>
+<td>DataFrame</td>
+<td>labels and xyz-coords of points</td>
+</tr>
+<tr class="odd">
+<td><strong>Returns</strong></td>
+<td><strong>Axes3D</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/valentina-lacivita/pointcloud/blob/main/point_cloud/core.py#L87" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="plot_vectors" class="level3">
+<h3 class="anchored" data-anchor-id="plot_vectors">plot_vectors</h3>
+<blockquote class="blockquote">
+<pre><code> plot_vectors (ax, vectors:&lt;built-infunctionarray&gt;, origins:&lt;built-
+               infunctionarray&gt;, length:float=0.3)</code></pre>
+</blockquote>
+<p><em>Plot vectors as arrows.</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ax</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>vectors</td>
+<td>array</td>
+<td></td>
+<td>vector to plot</td>
+</tr>
+<tr class="odd">
+<td>origins</td>
+<td>array</td>
+<td></td>
+<td>origin of vector</td>
+</tr>
+<tr class="even">
+<td>length</td>
+<td>float</td>
+<td>0.3</td>
+<td>vector length</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><a href="https://github.com/valentina-lacivita/pointcloud/blob/main/point_cloud/core.py#L103" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="plot_abc" class="level3">
+<h3 class="anchored" data-anchor-id="plot_abc">plot_ABC</h3>
+<blockquote class="blockquote">
+<pre><code> plot_ABC (input_data:pandas.core.frame.DataFrame, C_points:&lt;built-
+           infunctionarray&gt;, centroid:&lt;built-infunctionarray&gt;)</code></pre>
+</blockquote>
+<p><em>Plot point cloud including its convex hull and the C vectors as arrows.</em></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>input_data</td>
+<td>DataFrame</td>
+<td>labels and xyz-coords of points</td>
+</tr>
+<tr class="even">
+<td>C_points</td>
+<td>array</td>
+<td>calculated C points</td>
+</tr>
+<tr class="odd">
+<td>centroid</td>
+<td>array</td>
+<td>centroid of point cloud</td>
+</tr>
+<tr class="even">
+<td><strong>Returns</strong></td>
+<td><strong>figure</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div id="cell-32" class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plot_ABC(input_data, C_points, centroid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="00_core_files/figure-html/cell-21-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Let’s create a function to run it all, end-to-end:</p>
+<hr>
+<p><a href="https://github.com/valentina-lacivita/pointcloud/blob/main/point_cloud/core.py#L128" target="_blank" style="float:right; font-size:smaller">source</a></p>
+</section>
+<section id="calculate_c_points" class="level3">
+<h3 class="anchored" data-anchor-id="calculate_c_points">calculate_C_points</h3>
+<blockquote class="blockquote">
+<pre><code> calculate_C_points (input_file:str, output_file:str,
+                     output_plot_file:str=None, distance:float=1.0)</code></pre>
+</blockquote>
+<p><em>Calculate C points and export them to a file (together with the result plot, optionally).</em></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 25%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Type</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>input_file</td>
+<td>str</td>
+<td></td>
+<td>input file path with point A and B data</td>
+</tr>
+<tr class="even">
+<td>output_file</td>
+<td>str</td>
+<td></td>
+<td>output file path for the generated C points</td>
+</tr>
+<tr class="odd">
+<td>output_plot_file</td>
+<td>str</td>
+<td>None</td>
+<td>output file path for the plot of point cloud and C vectors</td>
+</tr>
+<tr class="even">
+<td>distance</td>
+<td>float</td>
+<td>1.0</td>
+<td>prescribed distance D of the B-&gt;C vectors</td>
+</tr>
+</tbody>
+</table>
+<p>And run it on the input data:</p>
+<div id="cell-36" class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>input_data <span class="op">=</span> <span class="st">"../data/cdd.txt"</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>output_result <span class="op">=</span> <span class="st">"../data/result_C_points.txt"</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>output_plot <span class="op">=</span> <span class="st">"../data/result_plot.png"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-37" class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>calculate_C_points(input_data, output_result, output_plot_file<span class="op">=</span>output_plot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Loading input data from '../data/cdd.txt'...
+Calculate points...
+Saving result data to '../data/result_C_points.txt'...
+Exporting plots to '../data/result_plot.png'...
+Done.</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="00_core_files/figure-html/cell-24-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/valentina-lacivita\.github\.io\/pointcloud");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/valentina-lacivita/pointcloud/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
