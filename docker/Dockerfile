@@ -6,7 +6,7 @@ ENV LC_ALL C.UTF-8
 
 # Install module and dependencies
 RUN apt-get update && apt-get install -y --force-yes gcc
-RUN pip install git+https://github.com/valentina-lacivita/ses_cloud.git
+RUN pip install git+https://github.com/valentina-lacivita/pointcloud.git
 
 RUN useradd --create-home appuser
 WORKDIR /home/appuser

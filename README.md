@@ -14,8 +14,8 @@ direction centroid -\> *B*.
 ## Usage
 
 Documentation can be found hosted on this GitHub
-[repository](https://github.com/valentina-lacivita/ses_cloud)’s
-[pages](https://valentina-lacivita.github.io/ses_cloud/).
+[repository](https://github.com/valentina-lacivita/pointcloud)’s
+[pages](https://valentina-lacivita.github.io/pointcloud/).
 
 ### Run the module on provided input data using Docker
 
@@ -33,10 +33,10 @@ to the `data` directory.
 ### Extra: beyond Docker / module installation via pip
 
 Install latest from the GitHub
-[repository](https://github.com/valentina-lacivita/ses_cloud):
+[repository](https://github.com/valentina-lacivita/pointcloud):
 
 ``` sh
-pip install git+https://github.com/valentina-lacivita/ses_cloud.git
+pip install git+https://github.com/valentina-lacivita/pointcloud.git
 ```
 
 #### Example: running C-points calculation on provided input data
@@ -51,6 +51,11 @@ output_result = "../data/result_C_points.txt"
 calculate_C_points(input_data, output_result)
 ```
 
+    Loading input data from '../data/cdd.txt'...
+    Calculate points...
+    Saving result data to '../data/result_C_points.txt'...
+    Done.
+
 Using optional parameters, one can also plot the point cloud along with
 the new *C* vectors by including also a filename for the plot image and
 specify a prescribed distance between the points *B* and *C*:
@@ -60,15 +65,28 @@ output_plot = "../data/result_plot.png"
 calculate_C_points(input_data, output_result, output_plot_file=output_plot, distance=1.0)
 ```
 
+    Loading input data from '../data/cdd.txt'...
+    Calculate points...
+    Saving result data to '../data/result_C_points.txt'...
+    Exporting plots to '../data/result_plot.png'...
+    Done.
+
+![](index_files/figure-commonmark/cell-3-output-2.png)
+
 ## Development
 
 > For the thought process behind the code, please follow the [core
-> notebook](https://github.com/valentina-lacivita/ses_cloud/blob/main/nbs/00_core.ipynb).
+> notebook](https://github.com/valentina-lacivita/pointcloud/blob/main/nbs/00_core.ipynb).
 
 > To browse the module code itself, please check out
-> [core.py](https://github.com/valentina-lacivita/ses_cloud/blob/main/ses_cloud/core.py)
+> [core.py](https://github.com/valentina-lacivita/pointcloud/blob/main/pointcloud/core.py)
 > and the [core
-> documentation](https://valentina-lacivita.github.io/ses_cloud/core.html).
+> documentation](https://valentina-lacivita.github.io/pointcloud/core.html).
+
+Given the characteristics of the problem, the emphasis in documentation
+quality and time constraints, we have chosen to leverage
+[nbdev](https://nbdev.fast.ai/) to write, test, document, and distribute
+software package.
 
 ### Contributing
 
@@ -118,6 +136,12 @@ Then run the `git commit` inside the virtual environment such that
 pre-commit hooks can be run and update the module code automatically.
 These hooks clean the notebooks to get rid of extreanous output for git
 and build the .py modules from Jupyter notebooks.
+
+The next step is to install the package
+
+``` shell
+pip install -e '.[dev]'
+```
 
 Also consider running inside the virtual environment \* `nbdev_test` to
 test the code \* `nbdev_readme` to update the repo’s `README.md` file

@@ -3,7 +3,7 @@ project:
 
 website:
   title: "point_cloud"
-  site-url: "https://valentina-lacivita.github.io/ses_cloud"
+  site-url: "https://valentina-lacivita.github.io/pointcloud"
   description: "point cloud cpoints"
   repo-branch: main
-  repo-url: "https://github.com/valentina-lacivita/ses_cloud"
+  repo-url: "https://github.com/valentina-lacivita/pointcloud"
