@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "point_cloud"
+  site-url: "https://valentina-lacivita.github.io/ses_cloud"
+  description: "point cloud cpoints"
+  repo-branch: main
+  repo-url: "https://github.com/valentina-lacivita/ses_cloud"

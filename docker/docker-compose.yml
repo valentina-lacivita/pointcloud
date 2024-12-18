@@ -1,0 +1,11 @@
+services:
+  cpoints:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      INPUT_DATA_FILE: "/data/cdd.txt"
+      OUTPUT_DATA_FILE: "/data/result_C_points.txt"
+      OUTPUT_PLOT_FILE: "/data/result_plot.png"
+    volumes:
+      - ../data:/data
