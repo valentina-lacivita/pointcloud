@@ -79,7 +79,7 @@ calculate_C_points(input_data, output_result, output_plot_file=output_plot, dist
 > notebook](https://github.com/valentina-lacivita/pointcloud/blob/main/nbs/00_core.ipynb).
 
 > To browse the module code itself, please check out
-> [core.py](https://github.com/valentina-lacivita/pointcloud/blob/main/pointcloud/core.py)
+> [core.py](https://github.com/valentina-lacivita/pointcloud/blob/main/point_cloud/core.py)
 > and the [core
 > documentation](https://valentina-lacivita.github.io/pointcloud/core.html).
 
